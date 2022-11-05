@@ -1,10 +1,24 @@
 name: hello world
 on:
   push:
-    branches: [main]
+    paths:
+      - '!REAdme.md'
+      - '**.js'
+    branches: 
+      - 'main'
+      - '!dev/**'
+  pull_request :
+    types : [opened, reopened, synchronize, labeled , unlabeled]
+  workflow_dispatch:
+    
 jobs:
   say-hello:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "TODAY=$(date +%y -%m -%d)" >> $GITHUB_ENV
-      - run: echo Hello world, Today is $TODAY
+    - uses: mheap/github-action-required-labels@v2
+      with:
+        mode: exactly
+        count: 0
+        labels: "Do not build"
+    - run: echo "TODAY=$(date +%y -%m -%d)" >> $GITHUB_ENV
+    - run: echo Hello world, Today is $TODAY
